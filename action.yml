@@ -1,0 +1,39 @@
+---
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: deploy helm chart
+description: deploys a helm chart using a standard repo
+inputs:
+  chart:
+    description: chart name
+    required: true
+  remote:
+    description: remote chart repository
+    required: true
+  remote_user_name:
+    description: user name for the remote repo
+    required: false
+  remote_password:
+    description: cred for te remote password
+    required: false
+  
+runs:
+  using: composite
+  steps:
+    - id: deploy_chart
+      name: Deploy Chart
+      uses: docker://alpine/helm:latest
+      shell: sh
+      run: |
+      
+         _auth=""
+         if [ "${{ inputs.repousername }}" != "" ] && [ "${{ inputs.repopassword }}" != "" ]; then
+           _auth="--username=${{ inputs.repousername }} --password=${{ inputs.repopassword }}"
+           printf "setting authentiation for helm repo as user name and credential provided\n"
+         fi
+         
+         helm repo add $repo_tmp ${{ inputs.repo }} $_auth
+         
+         helm repo push ${{ inputs.chart }} ${{ inputs.remote }}
+         
+         
