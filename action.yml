@@ -32,7 +32,7 @@ runs:
            printf "setting authentiation for helm repo as user name and credential provided\n"
          fi
          
-         helm repo add $repo_tmp ${{ inputs.repo }} $_auth
+         helm repo add ${{ inputs.remote }} ${{ inputs.chart }} $_auth
          
          helm repo push ${{ inputs.chart }} ${{ inputs.remote }}
          
