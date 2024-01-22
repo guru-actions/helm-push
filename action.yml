@@ -27,8 +27,8 @@ runs:
       run: |
       
          _auth=""
-         if [ "${{ inputs.repousername }}" != "" ] && [ "${{ inputs.repopassword }}" != "" ]; then
-           _auth="--username=${{ inputs.repousername }} --password=${{ inputs.repopassword }}"
+         if [ "${{ inputs.remote_user_name }}" != "" ] && [ "${{ inputs.remote_password }}" != "" ]; then
+           _auth="--username=${{ inputs.remote_user_name }} --password=${{ inputs.remote_password }}"
            printf "setting authentiation for helm repo as user name and credential provided\n"
          fi
          
