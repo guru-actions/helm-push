@@ -2,12 +2,12 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
 name: deploy helm chart
-description: deploys a helm chart using a standard repo
+description: deploys a helm chart using a standard repo, non oci
 inputs:
-  chart:
-    description: chart name
+  chart_package:
+    description: chart package
     required: true
-  remote:
+  remote_repo:
     description: remote chart repository
     required: true
   remote_user_name:
@@ -25,15 +25,13 @@ runs:
       uses: docker://alpine/helm:latest
       shell: sh
       run: |
-      
-         _auth=""
-         if [ "${{ inputs.remote_user_name }}" != "" ] && [ "${{ inputs.remote_password }}" != "" ]; then
-           _auth="--username=${{ inputs.remote_user_name }} --password=${{ inputs.remote_password }}"
-           printf "setting authentiation for helm repo as user name and credential provided\n"
-         fi
-         
-         helm repo add ${{ inputs.remote }} ${{ inputs.chart }} $_auth
-         
-         helm repo push ${{ inputs.chart }} ${{ inputs.remote }}
-         
-         
+        resp=$(curl  -k -o /dev/null -u ${{ inputs.remote_password }}:${{ inputs.remote_user_name }} -w "%{http_code}" ${{ inputs.remote_repo }} --upload-file ${{ inputs.chart_package }}
+        echo "response is *[$resp]*"
+        if [ "$resp" == "200" ]
+          then
+          echo "************** upload ok with code [$resp]" 
+        else
+          echo "************** upload to nexus failed with code [$resp]"
+          exit 1
+        fi
+           
