@@ -25,7 +25,7 @@ runs:
       uses: docker://alpine/helm:latest
       shell: sh
       run: |
-        resp=$(curl  -k -o /dev/null -u ${{ inputs.remote_password }}:${{ inputs.remote_user_name }} -w "%{http_code}" ${{ inputs.remote_repo }} --upload-file ${{ inputs.chart_package }}
+        resp=$(curl  -k -o /dev/null -u ${{ inputs.remote_password }}:${{ inputs.remote_user_name }} -w "%{http_code}" ${{ inputs.remote_repo }} --upload-file ${{ inputs.chart_package }})
         echo "response is *[$resp]*"
         if [ "$resp" == "200" ]
           then
